@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/a086dbb2d864792fc1c0/maintainability)](https://codeclimate.com/github/MoacirPetry/rails-roadmap/maintainability)
+
 ### Create the app
 
 Command: `rails _5.2.6_ new rails-roadmap --database=postgresql -M -C -T`
@@ -74,5 +76,18 @@ SimpleCov.start 'rails' do
 end
 ```
 
-###
+### Codeclimate
+
+Go on the https://codeclimate.com/dashboard
+
+Click in Add a Repository, find the repository and Add the Repo.
+
+Click in Repo Setting, go to Extra => Badges, select the Markdown, click on the Copy button and paste at README.md file.
+
+
+### Travis
+
+Go on the https://www.travis-ci.com/
+
+Find in the Active repositories the repo and click on the Trigger a build
 
