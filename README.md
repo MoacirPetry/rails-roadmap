@@ -44,4 +44,13 @@ Reference: https://github.com/commitizen/cz-cli
 
 2 - `commitizen init cz-conventional-changelog --save-dev --save-exact`
 
-### 
+### Bootstrap
+
+Reference: https://github.com/twbs/bootstrap-rubygem
+
+Rename the file **app/assets/stylesheets/application.css** to **app/assets/stylesheets/application.scss** and put this content inside:
+
+```scss
+// Custom bootstrap variables must be set or imported *before* bootstrap.
+@import "bootstrap";
+```
