@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "homepage/index.html.erb", type: :view do
+RSpec.describe 'homepage/index.html.erb', type: :view do
 
   let(:homepage) { visit root_path }
 
