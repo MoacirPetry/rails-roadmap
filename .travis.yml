@@ -12,6 +12,6 @@ before_script:
   - ./cc-test-reporter before-build
 script:
   - bundle exec rake db:create db:schema:load
-  - bundle exec rspec spec
+  - bundle exec rake spec
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
