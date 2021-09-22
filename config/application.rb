@@ -29,5 +29,13 @@ module RailsRoadmap
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.generators do |g|
+      g.test_framework :rspec,
+        view_specs: true,
+        controller_specs: true,
+        helper_specs: true,
+        routing_specs: true
+    end
   end
 end

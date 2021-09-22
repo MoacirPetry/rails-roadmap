@@ -24,6 +24,18 @@ Inside the file **.rspec** put this:
 --format documentation
 ```
 
+Add the generators in **config/application.rb**
+
+```ruby
+config.generators do |g|
+  g.test_framework :rspec,
+    view_specs: true,
+    controller_specs: true,
+    helper_specs: true,
+    routing_specs: true
+end
+```
+
 ### Commitizen
 
 Reference: https://github.com/commitizen/cz-cli
