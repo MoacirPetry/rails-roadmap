@@ -24,3 +24,12 @@ Inside the file **.rspec** put this:
 --format documentation
 ```
 
+### Commitizen
+
+Reference: https://github.com/commitizen/cz-cli
+
+1 - `npm install commitizen -g`
+
+2 - `commitizen init cz-conventional-changelog --save-dev --save-exact`
+
+### 
