@@ -54,3 +54,25 @@ Rename the file **app/assets/stylesheets/application.css** to **app/assets/style
 // Custom bootstrap variables must be set or imported *before* bootstrap.
 @import "bootstrap";
 ```
+
+### Simplecov
+
+Add in **Gemfile**
+
+Reference: https://github.com/simplecov-ruby/simplecov
+
+`gem 'simplecov', '~> 0.21.2', require: false`
+
+Add in **spec/rails_helper.rb**
+
+```ruby
+require 'simplecov'
+SimpleCov.start 'rails' do
+  add_filter '/app/jobs/'
+  add_filter '/app/helpers/'
+  add_filter '/app/models/'
+end
+```
+
+###
+
