@@ -1,4 +1,8 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/a086dbb2d864792fc1c0/maintainability)](https://codeclimate.com/github/MoacirPetry/rails-roadmap/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a086dbb2d864792fc1c0/maintainability)](https://codeclimate.com/github/MoacirPetry/rails-roadmap/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/a086dbb2d864792fc1c0/test_coverage)](https://codeclimate.com/github/MoacirPetry/rails-roadmap/test_coverage) [![Build Status](https://app.travis-ci.com/MoacirPetry/rails-roadmap.svg?branch=main)](https://app.travis-ci.com/MoacirPetry/rails-roadmap)   <a href="https://www.ruby-lang.org/pt/">
+    <img alt="Ruby" src="https://img.shields.io/badge/Ruby-2.6.7-brightgreen" target="_blank">
+  </a>   <a href="https://rubyonrails.org/">
+    <img alt="Ruby on Rails" src="https://img.shields.io/badge/Rails-5.2.6-brightgreen" target="_blank">
+  </a>
 
 ### Create the app
 
@@ -13,6 +17,10 @@ Update the file **.gitignore** with the **Rails.gitignore** file on the link bel
 Reference: https://github.com/github/gitignore
 
 ### Rspec
+
+<div>
+<img src="https://seeklogo.com/images/R/rspec-logo-DA1EE19A18-seeklogo.com.png" width="40"/>
+</div>
 
 Reference: https://github.com/rspec/rspec-rails
 
@@ -48,6 +56,10 @@ Reference: https://github.com/commitizen/cz-cli
 
 ### Bootstrap
 
+<div>
+<img src="https://seeklogo.com/images/B/bootstrap-logo-3C30FB2A16-seeklogo.com.png" width="40"/>
+</div>
+
 Reference: https://github.com/twbs/bootstrap-rubygem
 
 Rename the file **app/assets/stylesheets/application.css** to **app/assets/stylesheets/application.scss** and put this content inside:
@@ -78,16 +90,30 @@ end
 
 ### Codeclimate
 
+<div>
+<img src="https://seeklogo.com/images/C/code-climate-logo-5E0A1CED56-seeklogo.com.png"/>
+</div>
+
 Go on the https://codeclimate.com/dashboard
 
 Click in Add a Repository, find the repository and Add the Repo.
 
-Click in Repo Setting, go to Extra => Badges, select the Markdown, click on the Copy button and paste at README.md file.
+Click in Repo Setting, go to Extra => Badges, select the Maintainability Badge and the Test Coverage Badge with the Markdown, click on the Copy button and paste at README.md file.
+
+>🚨 Note: It is not necessary to install gem or other things!
 
 
-### Travis
+### Travis CI
+
+<div>
+<img src="https://seeklogo.com/images/T/travis-ci-logo-736FC36EC9-seeklogo.com.png" width="60"/>
+</div>
 
 Go on the https://www.travis-ci.com/
 
-Find in the Active repositories the repo and click on the Trigger a build
+Find in the Active repositories the repo and click on it.
+
+If you have the build passed, click on **build passing** green button and select the format **Markdown**, copy and paste here in the README file.
+
+>🚨 Note: It is not necessary to install gem or other things!
 
