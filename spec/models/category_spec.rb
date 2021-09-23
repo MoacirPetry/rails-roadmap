@@ -3,9 +3,7 @@ require 'rails_helper'
 RSpec.describe Category, type: :model do
   context 'Validates' do
     it 'is valid' do
-      # category = create(:category)
-      name = Faker::Commerce.department
-      category = Category.create(name: name)
+      category = create(:category)
       expect(category).to be_valid
     end
   end
