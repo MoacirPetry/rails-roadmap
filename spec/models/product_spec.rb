@@ -4,8 +4,10 @@ RSpec.describe Product, type: :model do
   context 'Validates' do
     it 'is valid' do
       # product = create(:product)
-      category = Category.create(name: 'Category for product 001')
-      product = Product.create(name: 'Product 001', category: category)
+      name = Faker::Commerce.product_name
+      category_name = Faker::Commerce.department
+      category = Category.create(name: category_name)
+      product = Product.create(name: name, category: category)
       expect(product).to be_valid
     end
   end

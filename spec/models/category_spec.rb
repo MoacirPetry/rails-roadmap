@@ -4,7 +4,8 @@ RSpec.describe Category, type: :model do
   context 'Validates' do
     it 'is valid' do
       # category = create(:category)
-      category = Category.create(name: 'Category 001')
+      name = Faker::Commerce.department
+      category = Category.create(name: name)
       expect(category).to be_valid
     end
   end
