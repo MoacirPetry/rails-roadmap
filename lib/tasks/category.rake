@@ -11,7 +11,7 @@ namespace :category do
 		if (ARGV.size == 2) && (ENV['n'] != "")
 	  	ENV['n'].to_i.times do |i|
 				# name = Faker::Commerce.department
-				name = "Category 00#{i}"
+				name = Faker::Commerce.department
 				category = "Category #{i} = #{name}"
 				puts "Registering... -> #{category}"
 				Category.create(name: name)

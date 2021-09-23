@@ -11,7 +11,7 @@ namespace :product do
 		if (ARGV.size == 2) && (ENV['n'] != "")
 	  	ENV['n'].to_i.times do |i|
 				# name = Faker::Food.dish
-				name = "Product 00#{i}"
+				name = Faker::Commerce.product_name
 				category = Category.all.sample
 				product = "#{name} - with this Category #{category.name}"
 				puts "Registering... -> #{product}"
