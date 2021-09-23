@@ -117,3 +117,24 @@ If you have the build passed, click on **build passing** green button and select
 
 >🚨 Note: It is not necessary to install gem or other things!
 
+### Sentry
+
+<div>
+<img src="https://seeklogo.com/images/S/sentry-logo-36928B74C1-seeklogo.com.png" width="60"/>
+</div>
+
+Go on the https://sentry.io/
+
+In Projects, click on Create Project, select Rails and give a name for this Project.
+
+After that, it will be displayed an information to put in the **Gemfile** this:
+
+```ruby
+gem 'sentry-ruby'
+gem 'sentry-rails'
+```
+
+Create this file **config/initializers/sentry.rb** and put the content informed on Sentry.
+
+### Faker
+
