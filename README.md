@@ -138,3 +138,9 @@ Create this file **config/initializers/sentry.rb** and put the content informed 
 
 ### Faker
 
+### Solutions
+
+**Travis CI** got errors sometimes if the **Gemfile.lock** is not with the **linux PLATFORMS**, so run this command:
+
+`bundle lock --add-platform x86_64-linux`
+
