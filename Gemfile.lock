@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/faker-ruby/faker.git
-  revision: 92f0e15117fb62aaf0a1ae488d2d5cafd862c9c0
+  revision: d369a567f96f164cc3664263a3b9673696a3469d
   branch: master
   specs:
     faker (2.19.0)
@@ -129,7 +129,7 @@ GEM
       mini_mime (>= 0.1.1)
     marcel (1.0.2)
     method_source (1.0.0)
-    mini_mime (1.1.1)
+    mini_mime (1.1.2)
     mini_racer (0.4.0)
       libv8-node (~> 15.14.0.0)
     minitest (5.14.4)
@@ -141,7 +141,7 @@ GEM
     pg (1.2.3)
     popper_js (2.9.3)
     public_suffix (4.0.6)
-    puma (4.3.9)
+    puma (4.3.10)
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
@@ -307,4 +307,4 @@ RUBY VERSION
    ruby 2.6.7p197
 
 BUNDLED WITH
-   2.2.15
+   2.2.29
