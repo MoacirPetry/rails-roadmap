@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/faker-ruby/faker.git
-  revision: a46a84145c33e9319c8ad1cc5c88ea2ccac525d5
+  revision: 92f0e15117fb62aaf0a1ae488d2d5cafd862c9c0
   branch: master
   specs:
     faker (2.19.0)
@@ -118,7 +118,6 @@ GEM
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
     libv8-node (15.14.0.1-x86_64-darwin-19)
-    libv8-node (15.14.0.1-x86_64-linux)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -137,14 +136,13 @@ GEM
     msgpack (1.4.2)
     multipart-post (2.1.1)
     nio4r (2.5.8)
-    nokogiri (1.12.4-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.12.4-x86_64-linux)
+    nokogiri (1.12.5-x86_64-darwin)
       racc (~> 1.4)
     pg (1.2.3)
     popper_js (2.9.3)
     public_suffix (4.0.6)
-    puma (3.12.6)
+    puma (4.3.9)
+      nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
     rack-test (1.1.0)
@@ -276,7 +274,6 @@ GEM
 
 PLATFORMS
   x86_64-darwin-19
-  x86_64-linux
 
 DEPENDENCIES
   bootsnap (>= 1.1.0)
@@ -290,7 +287,7 @@ DEPENDENCIES
   listen (>= 3.0.5, < 3.2)
   mini_racer
   pg (>= 0.18, < 2.0)
-  puma (~> 3.11)
+  puma (~> 4.3, >= 4.3.9)
   rails (~> 5.2.6)
   rails-erd
   rspec-rails (~> 5.0.0)
@@ -310,4 +307,4 @@ RUBY VERSION
    ruby 2.6.7p197
 
 BUNDLED WITH
-   2.2.17
+   2.2.15
