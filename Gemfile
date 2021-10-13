@@ -4,6 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.6.7'
 
 gem 'bootstrap', '~> 5.1'
+gem 'nokogiri', '~> 1.12', '>= 1.12.5'
 gem 'sentry-ruby'
 gem 'sentry-rails'
 
