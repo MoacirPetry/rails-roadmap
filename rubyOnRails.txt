@@ -1,0 +1,1147 @@
+=========================================================================================================================================
+TO INSTALL ruby, gem e rails
+=========================================================================================================================================
+#to create an app with database postgresql
+rails new myFirstApp --database=postgresql
+
+#to see this app running on browser
+rails s or rails server
+#address: localhost:3000
+=========================================================================================================================================
+TO INSTALL DB AND RUN RAKE
+=========================================================================================================================================
+#create user on postgresql with name of OS, obs: rails is the user of Linux OS
+sudo -u postgres createuser --superuser rails
+rails@ubuntu-17:~/Ruby$ sudo -u postgres createuser --superuser employee
+
+#acess postgres
+sudo -su postgres
+psql
+
+#create a user
+postgres=# create user employee
+
+#set a new password for user employee
+postgres-# \password employee
+
+#create a role
+postgres=# CREATE ROLE appEmployee;
+
+#alter role
+postgres=# ALTER ROLE appEmployee CREATEDB CREATEROLE SUPERUSER LOGIN;
+
+\l #list of databases
+\du #list of roles
+
+#create your app and enter in config/database.yml, set user and pass
+username: employee
+password: 1qazxsw2
+host: localhost
+port: 5432
+
+#create db
+rake db:create
+=========================================================================================================================================
+SCAFFOLD AND RUN RAKE MIGRATE
+=========================================================================================================================================
+#scaffold to generate a CRUD
+rails generate scaffold user name:string email:string
+rails generate scaffold holiday date:date holidayName:string
+
+#run rake migrate to apply changes
+rake db:migrate
+=========================================================================================================================================
+ROUTES config/routes.rb
+=========================================================================================================================================
+#create controller
+rails generate controller welcome
+
+#create views/welcome/index.html.erb
+<h1>Hey I'm a new route!!</h1>
+<%= link_to "Add User", users_path %>
+<%= link_to "Add Holiday", users_path %>
+
+#add config/routes.rb
+get 'inicio' => 'welcome#index'
+root 'welcome#index'
+=========================================================================================================================================
+i18n config/locales/
+=========================================================================================================================================
+#create pt-br.yml and put the code above
+"pt-br":
+	hello: "Olá Mundo"
+	friends: "Amigos"
+
+#create pr-br_rails.yml and put the source code references: https://github.com/svenfuchs/rails-i18n/blob/master/rails/locale/pt-BR.yml
+
+#config/application.rb inside class application in module AppPostgresql
+config.i18n.default_locale = 'pt-BR'
+=========================================================================================================================================
+Bootstrap
+=========================================================================================================================================
+#https://mixandgo.com/blog/how-to-install-bootstrap-4-in-rails
+rails new bootstrap4 -B -T
+cd bootstrap4
+rails g controller site index
+
+# config/routes.rb
+Rails.application.routes.draw do
+  root 'site#index'
+end
+
+#/app/views/layouts/application.html.erb
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Bootstrap4</title>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <div class="container">
+      <%= yield %>
+    </div>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  </body>
+</html>
+
+#/app/views/sites/index.html.erb
+<div class="row">
+  <div class="col-sm-12 text-xs-center bootstrap-welcome">
+    <h1>Bootstrap 4 Works!</h1>
+    <p class="lead">Go ahead and build your awesome app now.</p>
+  </div>
+</div>
+
+#rename /app/assets/stylesheets/application.css to /app/assets/stylesheets/application.scss
+#add in /app/assets/stylesheets/application.scss
+@import "bootstrap";
+@import "site";
+
+#/app/assets/stylesheets/site.scss
+.bootstrap-welcome {
+  padding-top: 5em;
+}
+
+#create /app/assets/javascripts/bootstrap.js and put content the source bootstrap.com
+#create /app/assets/stylesheets/bootstrap.css and put content the source bootstrap.com
+
+#/app/assets/javascripts/application.js
+//= require jquery
+//= require jquery_ujs
+//= require turbolinks
+//= require_tree .
+//= require bootstrap
+=========================================================================================================================================
+PAGINATION
+=========================================================================================================================================
+#https://github.com/kaminari/kaminari
+
+#edit Gemfile
+gem 'kaminari'
+
+#run bundle and generate config. 
+bundle install
+rails g kaminari:config
+
+#config. params controller app/controllers/users_controller.rb
+def index
+  @users = User.all.order(:email).page(params[:page])
+end
+
+#create file config/locales/en.kaminari.yml and add the content i18n of https://github.com/kaminari/kaminari
+
+#config in config/initializers/kaminari_config.rb
+config.default_per_page = 3
+
+#edit app/views/users/index.html.erb
+<br><br><%= paginate @users %>
+=========================================================================================================================================
+RAILS COMPOSER
+=========================================================================================================================================
+#https://github.com/RailsApps/rails-composer
+rails new appComposer -m https://raw.github.com/RailsApps/rails-composer/master/composer.rb
+
+***create a DB before to proceed
+=========================================================================================================================================
+RAKE DB:SEED
+=========================================================================================================================================
+rails new rakeDBseed
+rails g scaffold User name:string email:string
+
+#config. db/seeds.rb
+10.times do |i|
+	User.create(name: "Fulano de Tal#{i}", email: "fulano#{i}@gmail.com")
+end
+
+#run to insert users on DB
+rake db:seed
+
+#library that generates fake data, config. Gemfile, reference: https://github.com/stympy/faker
+gem 'faker'
+
+#run bundle
+bundle install
+
+#config. db/seeds.rb with parameters of gem faker
+10.times do |i|
+	user_name = Faker::Name.name
+	user_email = Faker::Internet.email
+	user = "#{user_name} - #{user_email}"
+	puts "Cadastrando Usuário -> #{user}"
+	User.create(name: user_name, email: user_email)
+end
+=========================================================================================================================================
+RAKE TASK
+=========================================================================================================================================
+#create a custom task
+rails g task utils setup_user
+
+#config. lib/tasks/utils.rake
+namespace :utils do
+  desc "Add users with quantity needed"
+  task setup_user: :environment do
+  	if Rails.env.development?
+  		if (ARGV.size == 2) && (ENV['QTD'] != "")
+		  	ENV['QTD'].to_i.times do |i|
+				user_name = Faker::Name.name
+				user_email = Faker::Internet.email
+				user = "#{user_name} - #{user_email}"
+				puts "Cadastrando Usuário -> #{user}"
+				User.create(name: user_name, email: user_email)
+			end
+		else 
+			puts "You need inform the quantity of users!"
+			puts "e.g. rake utils:setup_user QTD=4"
+		end
+	else
+		puts "You are not in developemtn mode!"
+	end
+  end
+end
+
+#running rake to add 30 users
+rake utils:setup_user QTD=30
+=========================================================================================================================================
+REFERENCES TABLES
+=========================================================================================================================================
+#create a app, option -B 
+rails new aula25 -B
+rails g scaffold Father name:string
+rails g scaffold Child name:string sex:string father:references
+rake db:create db:migrate
+
+#config. app/models/father.rb
+has_many :children
+
+#create def set_fater app/controllers/children_controller.rb, the variable @fathers is used in app/views/children/_form.html.erb
+before_action :set_father, only: [:edit, :update, :new]
+    # Set Father for variable @fathers in view
+    def set_father
+      @fathers = Father.all
+    end
+
+#in app/views/children/_form.html.erb change <%= f.text_field :sex %> to:
+<%= f.select(:sex, options_for_select([["Male", "M"], ["Female", "F"]], @child.sex), {include_blank: false}) %>
+
+#in app/views/children/_form.html.erb change <%= f.text_field :father_id %> to:
+<%= f.collection_select(:father_id, @fathers, :id, :name, include_blank: false) %>
+
+#change name of object in HTML
+<td><%= child.father.name %></td> #config. app/views/children/index.html.erb
+<%= @child.father.name %> #config. app/views/children/show.html.erb
+
+#create a helper in app/helpers/application_helper.rb to show function get_sex in app/views/father/show.html.erb
+module ApplicationHelper
+	def get_sex(var)
+		if var == "M"
+			"Male"
+		else
+			"Female"
+		end
+	end
+end
+
+#app/views/father/show.html.erb add below <%= @father.name %>
+  <hr>
+  <ul>
+  	<% @father.children.each do |child| %>
+  		<li><%= "#{child.name} - #{get_sex(child.sex)}" %></li>
+  	<% end %>
+  </ul>
+=========================================================================================================================================
+RAKE MIGRATION TO ADD NEW FIELDS
+=========================================================================================================================================
+#generate a new model
+rails g scaffold Occupation description:string
+rake db:migrate
+
+#add fields email, passport_number
+rails g migration AddFieldsToFather email:string passport_number:string occupation:references
+rake db:migrate
+
+#config. app/views/fathers/index.html.erb - headers
+<th>Email</th>
+<th>Passport Number</th>
+
+#config. app/views/fathers/index.html.erb - fields in DB
+<td><%= father.email %></td>
+<td><%= father.passport_number %></td>
+<td><%= father.occupation.description %></td>
+
+#config. app/views/fathers/_form.html.erb - fields in DB
+<div class="field">
+  <%= f.label :email %>
+  <%= f.text_field :email %>
+</div>
+
+<div class="field">
+  <%= f.label :passport_number %>
+  <%= f.text_field :passport_number %>
+</div>
+
+#config. app/views/fathers/show.html.erb - fields in DB
+<strong>Email:</strong>
+<%= @father.email %>
+<strong>Passport Number:</strong>
+<%= @father.passport_number %>
+<strong>Occupation:</strong>
+<%= @father.occupation.description %>
+
+#adjust in app/controllers/fathers_controller.rb
+def father_params
+  params.require(:father).permit(:name, :email, :passport_number, :occupation_id)
+end
+
+#belongs_to in modells/father.rb
+class Father < ApplicationRecord
+	has_many :children
+	belongs_to :occupation
+end
+
+#config. app/views/fathers/_form.html.erb - fetch occupations
+<div class="field">
+  <%= f.label :occupation_id %>
+  <%= f.collection_select(:occupation_id, @occupations, :id, :description, include_blank: false) %>
+</div>
+
+#adjust in app/controllers/fathers_controller.rb
+before_action :set_occupations, only: [:create, :edit, :update, :new]
+
+# Form Fathers fetch occupations values
+def set_occupations
+  @occupations = Occupation.all
+end
+=========================================================================================================================================
+VALIDATES OF FIELDS ON SERVER AND BD
+=========================================================================================================================================
+#references: http://guides.rubyonrails.org/active_record_validations.html
+#edit app/models/father.rb
+class Father < ApplicationRecord
+	has_many :children
+	belongs_to :occupation
+	validates :name, :email, presence: true
+	validates :email, uniqueness: true
+	def occupation_description
+		if self.occupation.blank?
+			" - "
+		else
+			self.occupation.description
+		end
+	end
+end
+
+#change app/views/fathers/index.html.erb
+<td><%= father.occupation_description %></td>
+
+# change app/views/fathers/show.html.erb
+<%= @father.occupation_description %>
+=========================================================================================================================================
+IMAGE - GEM PAPAERCLIP - IMAGEMAGICK
+=========================================================================================================================================
+#install imagemagick
+apt-get install imagemagick
+
+#Gemfile
+gem 'paperclip', '~> 5.0.0'
+bundle install
+
+#new field avatar in father table
+rails g paperclip father avatar
+rake db:migrate
+
+#include below code in app/models/father.rb
+has_attached_file :avatar, styles: { medium: "300x300>", thumb: "100x100>" }
+validates_attachment_content_type :avatar, content_type: /\Aimage\/.*\z/
+
+#change app/views/father/_form.html.erb
+<%= form_for @father, :url => fathers_path, html: { multipart: true } do |f| %>
+
+#add before label name in app/views/father/_form.html.erb
+<div class="field">
+  <%= f.label :avatar %>
+  <%= f.text_field :avatar %>
+</div><br>
+
+#add :avatar in params allowed in app/controllers/fathers_controller.rb
+def father_params
+  params.require(:father).permit(:name, :email, :passport_number, :occupation_id, :avatar)
+end
+
+#put before name label in app/views/fathers/show.html.erb
+<strong>Avatar:</strong>
+<%= image_tag @father.avatar.url(:medium) %><br>
+=========================================================================================================================================
+SEARCH
+=========================================================================================================================================
+rails new search -B
+rails g scaffold Customer name:string email:string
+rake db:migrate
+
+#add fields before tag <h1> in app/views/customers/index.html.erb
+<%= form_tag(customers_path, :method => :get) do %>
+  <%= text_field_tag 'search', nil, placeholder: 'Enter search term...' %>
+  <%= submit_tag 'Search' %>
+<% end %>
+
+#add in app/controllers/customers_controller.rb
+def index
+  if params[:search]
+    @customers = Customer.search(params[:search])
+  else
+    @customers = Customer.all
+  end
+end
+
+#add in app/models/customer.rb
+scope :search, ->(query) {where("name like ?", "%#{query}%")}
+#This below is the same
+#def self.search(query)
+	#where("name like ?", "%#{query}%")
+#end
+=========================================================================================================================================
+NESTED ATTRIBUTES
+=========================================================================================================================================
+rails g scaffold Address street:string zip:string customer:references
+rake db:migrate
+
+#put inside app/models/customer.rb
+has_one :address
+accepts_nested_attributes_for :address
+
+#add optional true inside app/models/address.rb
+class Address < ApplicationRecord
+  belongs_to :customer, :optional => true
+end
+
+
+#add in app/controllers/customers_controller.rb
+# Never trust parameters from the scary internet, only allow the white list through.
+def customer_params
+  params.require(:customer).permit(:name, :email, :address_attributes => [:street, :zip])
+end
+
+# GET /customers/new
+def new
+  @customer = Customer.new
+  @customer.build_address
+end
+
+=========================================================================================================================================
+DEVISE AUTH
+=========================================================================================================================================
+rails new deviseAuth
+rails g controller Welcome index
+rails g scaffold  Customer name:string email:string
+rails g scaffold  Product description:string quantity:integer
+rake db:migrate
+
+#adjust index page in config/routes.rb
+root 'welcome#index'
+
+#config app/views/welcome/index.html.erb
+<h1>Home</h1>
+<% if user_signed_in? %>
+	<ul>
+		<li><%= current_user.email %></li>
+		<li><%= link_to "Logout", destroy_user_session_path, method: :delete %></li>
+	</ul>
+<% else %>
+	<ul>
+		<li><%= link_to "Add new user", new_user_registration_path %></li>
+		<li><%= link_to "Login", new_user_session_path %></li>
+	</ul>
+<% end %>
+<ul>
+	<li><%= link_to "Products", products_path %></li>
+	<li><%= link_to "Customers", customers_path %></li>
+	<li><%= link_to "Addresses", addresses_path %></li>
+	<li><%= link_to "Users", control_users_index_path %></li>
+</ul>
+
+#add gem devise in Gemfile
+gem 'devise'
+
+#running bundle install
+bundle install
+
+#running install of devise
+rails g devise:install
+
+#add devise to model User, model Device User
+rails g devise User
+rake db:migrate
+
+#add in config/environments/development.rb
+config.action_mailer.default_url_options = {host: 'localhost', port: 3000}
+
+#add authenticate_user in controllers, app/controllers/products_controller.rb and addresses_controller.rb
+before_action :authenticate_user!
+
+#if user allowed to view index list of users, app/controllers/customers_controller.rb
+before_action :authenticate_user!, except: [:index]
+
+#config config/initializers/devise.rb
+config.scoped_views = true
+
+#active generating views of users
+rails g devise:views users
+
+#config app/views/users/new.html.erb
+<h2>Register New User</h2>
+=========================================================================================================================================
+PUNDIT/DEVISE
+=========================================================================================================================================
+rails g controller ControlUsers index
+
+#config app/controllers/control_users_controller.rb
+@users = user.all
+
+#config app/views/control_users/index.html.erb
+<h1>Users Registered</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.email %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+#add authenticate_user in controllers, app/controllers/control_users_controller.rb
+before_action :authenticate_user!
+
+#add role in Users
+rails g migration AddRoleToUsers
+
+#config db/....add_role_to_users.rb
+add_column :users, :role, :integer, :default => 0
+
+#add model user.rb app/models/user.rb
+enum role: [:normal_user, :admin]
+
+#run migrate
+rake db:migrate
+
+#rails console, change admin user 01
+x = User.first
+x.role = :admin
+x.save
+
+#Pundit, add in Gemfile
+gem 'pundit'
+bundle install
+
+#add app/controllers/application_controller.rb
+include Pundit
+
+#run generate pundit install
+rails g pundit:install
+
+#create new policy to model user
+rails g pundit:policy user
+
+#add inside app/controllers/control_users_controller.rb, that call app/policies/user_policy.rb
+authorize @users
+
+#put inside app/policies/user_policy.rb
+def index?
+	user.admin?
+end
+
+#add app/controllers/application_controller.rb
+rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
+private
+
+  def user_not_authorized
+  	flash[:notice] = "You don't have permission!!"
+  	redirect_to(request.referrer || root_path)
+  end
+
+#add in app/views/welcome/index.html.erb
+<p id="notice"><%= notice %></p>
+
+#create new policy to model address
+rails g pundit:policy address
+
+#create a function in app/policies/address_policy.rb
+def index?
+	user.admin?
+end
+
+#add app/controllers/control_users_controller.rb
+authorize @users
+
+#add in app/views/addresses/index.html.erb
+<p id="notice"><%= notice %></p>
+<h1>Listing Addresses</h1>
+<% if policy(@addresses).index? %>
+  <%= render partial: "admin_index" %>
+<% else %>
+  <%= render partial: "normal_user_index" %>
+<% end %>
+
+#create a partial file app/views/addresses/_admin_index.html.erb
+<p id="notice"><%= notice %></p>
+<h1>Addresses</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Street</th>
+      <th>Zip</th>
+      <th>Customer</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @addresses.each do |address| %>
+      <tr>
+        <td><%= address.street %></td>
+        <td><%= address.zip %></td>
+        <td><%= address.customer.name %></td>
+        <td><%= link_to 'Show', address %></td>
+        <td><%= link_to 'Edit', edit_address_path(address) %></td>
+        <td><%= link_to 'Destroy', address, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<%= link_to 'New Address', new_address_path %>
+
+#create a partial file app/views/addresses/_normal_user_index.html.erb
+<p id="notice"><%= notice %></p>
+<h1>Addresses</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Street</th>
+      <th>Zip</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @addresses.each do |address| %>
+      <tr>
+        <td><%= address.street %></td>
+        <td><%= address.zip %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<%= link_to 'New Address', new_address_path %>
+=========================================================================================================================================
+RANSACK/SEARCHS
+=========================================================================================================================================
+#Ransack, add in Gemfile
+gem 'ransack'
+bundle install
+
+#adjust app/controllers/produtcs_controller.rb
+def index
+  #@products = Product.all
+  @q = Product.ransack(params[:q])
+  @products = @q.result
+end
+
+#add before <h1> in app/views/products/index.html.erb
+<%= search_form_for @q do |f| %>
+  <%= f.label :description_cont %>
+  <%= f.search_field :description_cont %><br>
+  <%= f.label :quantity_lteq %>
+  <%= f.search_field :quantity_lteq %><br><br>
+  <%= f.submit %>
+<% end %>
+
+#add order in app/views/products/index.html.erb
+#change <th>Description</th> to:
+<th><%= sort_link(@q, :description) %></th>
+#change <th>Quantity</th> to:
+<th><%= sort_link(@q, :quantity) %></th>
+
+#to operator "or" and "and", change in controller to:
+@q = Product.ransack(params[:q].try(:merge, m: 'or'))
+
+#for user select the operators, change in app/views/products/index.html.erb
+<%= search_form_for @q do |f| %>
+  <%= f.label :description_cont %>
+  <%= f.search_field :description_cont %><br>
+  <%= f.select :combinator, [['and', 'and'],['or', 'or']] %><br>
+  <%= f.label :quantity_lteq %>
+  <%= f.search_field :quantity_lteq %><br><br>
+  <%= f.submit %>
+<% end %>
+
+#to operator "or" and "and" and adjust app/controllers/produtcs_controller.rb
+@q = Product.ransack(params[:q].try(:merge, m: params[:combinator]))
+=========================================================================================================================================
+TDD - TEST DRIVEN DEVELOPMENT => UNIT TESTS/INTEGRATION TESTS
+=========================================================================================================================================
+#References:
+#https://relishapp.com/rspec/rspec-core/v/3-4/docs/example-groups/basic-structure-describe-it
+#http://www.betterspecs.org/br
+
+#-T skip test default and -B skip bundle install
+rails new tdd -B -T
+
+#add gem 'rspec-rails' in Gemfile, part of development and test, like this:
+group :development, :test do
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug', platform: :mri
+  gem 'rspec-rails', '~> 3.6'
+end
+
+#running bundle install
+bundle install
+
+#install rspec
+rails g rspec:install
+
+#add in tdd/.rspec
+--color
+--format documentation
+
+#add in config/application.rb
+#Rspec config. to test in rails generate command
+config.generators do |g|
+	g.test_framework :rspec, :view_specs => false,
+							 :controller_specs => false,
+							 :helper_specs => false,
+							 :routing_specs => false,
+							 :request_specs => false
+end
+
+#generate scaffold for test
+rails g scaffold User name:string email:string
+rake db:migrate
+
+#config app/models/user.rb
+validates :name, presence: true
+validates :email, presence: true
+def valid_title
+	"#{self.name} - #{self.email}"
+end
+
+#populate user
+rails console
+user = User.new(name: "Moacir Petry", email: "moacir@petry.com")
+user.valid?
+user = User.new(name: "João")
+user.valid?
+
+#config. test in tdd/spec/models/user_spec.rb
+require 'rails_helper'
+RSpec.describe User, type: :model do
+  context "User valid test" do
+  	it "user.valid?" do
+  		user = User.new
+  		user.name = "Moacir Petry"
+  		user.email = "moacir@petry.com"
+  		expect(user.valid?).to be_truthy
+  	end
+  	it "user.invalid?" do
+  		user = User.new
+  		user.name = "John"
+  		user.email = nil
+  		expect(user.valid?).to be_falsey
+  	end
+  	it "user.valid? with email null" do
+  		user = User.new
+  		user.name = "Marie"
+  		user.email = nil
+  		expect(user.valid?).to be_truthy
+  	end
+  end
+  context "Valid title" do
+  	it "Valid title" do
+  		user = User.new
+  		user.name = "Sophie"
+  		user.email = "sophie@live.com"
+  		expect(user.valid_title).to be_eql("Sophie - sophie@live.com")
+  	end
+  end
+end
+
+#running tests to see errors and valid unit tests
+rake spec
+=========================================================================================================================================
+TDD - TEST DRIVEN DEVELOPMENT => ACCEPTANCE TESTS
+=========================================================================================================================================
+#Reference:
+#https://github.com/teamcapybara/capybara
+
+#add gem 'capybara' in Gemfile, part of development and test, like this:
+group :development, :test do
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug', platform: :mri
+  gem 'rspec-rails', '~> 3.6'
+  gem 'capybara'
+end
+
+#running bundle install
+bundle install
+
+#add into RSpec.configure do |config| in spec/rails_helper.rb
+#Capybara
+config.include Capybara::DSL
+
+#add in environment/test.rb
+config.allow_concurrency = false
+
+#add test in file tdd/spec/models/user_spec.rb, test of add new user and record received in DB
+context "Test New User View" do
+  it "Create a new user" do
+    users = User.all
+    size_old = users.size
+    visit '/users/new'
+    within('#new_user') do
+      fill_in 'Name', :with => "Jason"
+      fill_in 'Email', :with => "jason@usa.com"
+    end
+    click_button 'Create User'
+    expect(page).to have_content 'User was successfully created.'
+    users = User.all
+    expect(users.size).to eql(size_old +1)
+  end
+end
+=========================================================================================================================================
+NOTIFY/AJAX/ASSET PIPELINE
+=========================================================================================================================================
+#References:
+#Sprockets https://github.com/rails/sprockets
+#Execjs https://github.com/rails/execjs
+
+#add into tdd/config/initializers.rb
+Rails.application.config.assets.precompile += %w( notify.js users.css users.js )
+
+#add before <h1> tag in app/views/users/new.html.erb
+<%  content_for :head do %>
+  <%= javascript_include_tag "notify" %>
+<% end %>
+
+#add into if/else statment in def create, in app/controllers/users_controller.rb
+format.js # views/users/create.js.erb
+
+#add before <p id="notice"><%= notice %></p> in app/views/users/index.html.erb, very important, load just controller of page
+<%  content_for :head do %>
+  <%= stylesheet_link_tag params[:controller] %>
+  <%= javascript_include_tag params[:controller] %>
+<% end %>
+
+#create file app/views/users/create.js.erb
+var qtdErrors = <%= @user.errors.count %>;
+
+if (qtdErrors > 0){
+	$.notify("An error ocurred!!", "error");
+} else{
+	$.notify("Success!!", "success");
+	$("#user_name").val("");
+	$("#user_email").val("");
+}
+
+#config remote to use ajax in form app/views/users/_form.html.erb
+<%= form_for(user, remote: true) do |f| %>
+
+#add in head tag app/views/layouts/application.html.erb
+<%= yield :head %>
+=========================================================================================================================================
+HAS MANY THROUGH/COCOON
+=========================================================================================================================================
+rails new hasManyThrough
+rails g scaffold Physician name:string
+rails g scaffold Appointment physician:references patient:references appointment_date:datetime
+rails g scaffold Patient name:string
+rake db:migrate
+
+#add has many and accept nested attributes in app/models/physician.rb
+has_many :appointments
+has_many :patients, through: :appointments
+accepts_nested_attributes_for :appointments, reject_if: :all_blank, allow_destroy: true
+
+#add has many in app/models/patient.rb
+has_many :appointments
+has_many :physicians, through: :appointments
+
+#add accept nested attributes in app/models/appointment.rb
+accepts_nested_attributes_for :patient, reject_if: :all_blank, allow_destroy: true
+
+#insert into controller app/controllers/physicians_controller.rb
+def physician_params
+  params.require(:physician).permit(:name, :appointments_attributes => [:id, :appointment_date, :physician_id, :patient_id, :destroy, :patient_attributes => [:id, :name]])
+end
+
+#add gem cocoon in Gemfile
+gem 'cocoon'
+
+#add lib in app/assets/javascripts/application.js
+//= require cocoon
+
+#create a file called app/views/physicians/_appointment_fields.html.erb
+<li class="control-group nested-fields">
+  <div class="controls">
+    <%= f.datetime_select :appointment_date %>
+    <%= f.fields_for :patient do |appointment_patient| %>
+      <%= appointment_patient.text_field :name %>
+    <% end %>
+    <%= link_to_remove_association "Remove", f %>
+  </div>
+</li>
+
+#add in app/views/physicians/_form.html.erb, after <%= f.text_field :name %>
+<%= link_to_add_association 'Add Appointment', f, :appointments, 'data-association-insertion-node' => '#appointments-patient ol', 'data-association-insertion-method' => 'append', :wrap_objetc => Proc.new {|appointment| appointment.build_patient; appointment} %>
+<hr>
+<fieldset id="appointments-patient">
+  <ol>
+    <%= f.fields_for :appointments do |appointment| %>
+      <%= render partial: "appointment_fields", locals: { f: appointment } %>
+    <% end %>
+  </ol>
+</fieldset>
+=========================================================================================================================================
+MIGRATION PHONE_NUMBER AND FIX THEM
+=========================================================================================================================================
+#create migration to phone_number limit 4
+rails generate migration change_integer_limit_in_employees
+
+#put in db/migrate/migra_created_before
+change_column :employees, :phone_number, :integer, limit: 8
+
+#run rake db:migrate
+rake db:migrate
+
+#create a rake task to fix and update phone numbers
+rails g task fix update_phone_number
+
+#put in lib/task/fix.rake created on before command
+namespace :fix do
+  desc "Fix employees phone numbers"
+  task update_phone_number: :environment do
+  	$c = 0
+  	if Rails.env.development?
+  		while ( Employee.count > $c) do
+			$c += 1
+			employee_phone_number = Faker::Base.numerify('562082####')
+			employee= "#{employee_phone_number}"
+			puts "#{$c} Updating Employee phone number -> #{employee}"
+			Employee.update($c, phone_number: employee_phone_number)
+		end
+	else
+		puts "You are not in developemtn mode!"
+		puts "e.g. rake fix:update_phone_number"
+	end
+  end
+end
+
+#run command below to update phone_number
+rake fix:update_phone_number
+
+#change view app/views/employees/index.html.erb
+<td><%= employee.phone_number %></td>
+#by this
+<td><%= number_to_phone(employee.phone_number, country_code: 1) %></td>
+=========================================================================================================================================
+CONTROLLERS DEVISE USERS
+=========================================================================================================================================
+rails generate devise:controllers users
+=========================================================================================================================================
+PAGINATION - KAMINARI/BOOTSTRAP
+=========================================================================================================================================
+#References:
+#amatsuda kaminari themes: https://github.com/amatsuda/kaminari_themes
+rails g kaminari:views bootstrap3 -e erb
+=========================================================================================================================================
+FLASH MESSAGES
+=========================================================================================================================================
+#put inside div container app/views/layouts/application.html.erb
+<% flash.each do -%>
+  <div id="flash">
+    <div class="alert alert-success">
+      <%= flash[:notice] %>
+    </div>
+  </div>
+<script>
+  setTimeout();      
+</script>
+<% end -%>
+
+#create in a file app/assests/javascript/flash_messages.js
+setTimeout(function(){
+$("#flash").empty(); //just do it to empty alert div
+}, 4700); 
+=========================================================================================================================================
+PAGER IN SOME PAGES
+=========================================================================================================================================
+#create a file app/assets/stylesheets/pagination_pager.scss
+/* Pagination */
+.pager {
+  margin-bottom: 60px;
+  text-align: left;
+}
+.pager > li > a {
+  width: 140px;
+  padding: 10px 20px;
+  text-align: center;
+  border-radius: 30px;
+}
+
+#add this file in app/assets/stylesheets/application.scss
+@import "pagination_pager";
+
+#put in all show, edit
+<ul class="pager">
+	<li><%= link_to 'Show', @employee %></li>
+	<li><%= link_to 'Back', employees_path %></li>
+</ul>
+=========================================================================================================================================
+PAGER IN SOME PAGES
+=========================================================================================================================================
+#config. table to show employee in app/views/employees/show.html.erb
+<div class="col-md-6">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th colspan="2">Employee Information</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Name:</strong></td>
+        <td><%= @employee.name %></td>
+      </tr>
+      <tr>
+        <td><strong>Email:</strong></td>
+        <td><%= @employee.email %></td>
+      </tr>
+      <tr>
+        <td><strong>Phone number:</strong></td>
+        <td><%= @employee.phone_number %></td>
+      </tr>
+      <tr>
+        <td><strong>Department:</strong></td>
+        <td><%= @employee.department %></td>
+      </tr>
+      <tr>
+        <td><strong>Position:</strong></td>
+        <td><%= @employee.position %></td>
+      </tr>
+    </tbody>
+  </table>
+  <ul class="pager">
+    <li><%= link_to 'Edit', edit_employee_path(@employee) %></li>
+    <li><%= link_to 'Back', employees_path %></li>
+  </ul>
+</div>
+=========================================================================================================================================
+NORMAL_USER JUST VIEW INDEX AND SHOW
+=========================================================================================================================================
+#add in app/controllers/employees_controller.rb, params to remove permission of normal_user, add also in def destroy and def edit
+def new
+  @users = User.all
+  authorize @users
+  @employee = Employee.new
+end
+
+#add in app/policies/user_policy.rb
+def new?
+  user.admin?
+end
+def edit?
+  user.admin?
+end
+def destroy?
+  user.admin?
+end
+=========================================================================================================================================
+DEVISE TIMEOUT SESSION
+=========================================================================================================================================
+#configuration in config/initializers/devise.rb
+config.timeout_in = 30.seconds #10.minutes
+
+#add in app/models/user.rb
+devise :timeoutable
+
+#change in app/views/layouts/application.html.erb the flash messages config.
+<% if flash.any? %>
+<div id="flash">
+  <% flash.keys.each do |msg| %>
+    <% next if msg.to_s == 'timedout' %>
+    <div class="alert alert-info" role="alert">
+      <%= flash.discard(msg) %>
+    </div>
+  <% end %>
+</div>
+<% end %>
+=========================================================================================================================================
+VALIDATES
+=========================================================================================================================================
+#add :create in app/controllers/employees_controller.rb
+before_action :set_department, only: [:edit, :update, :new, :create]
+before_action :set_position, only: [:edit, :update, :new, :create]
+
+#config. validates in model app/models/employee.rb
+validates :name, :email, :phone_number, presence: true, uniqueness: true
+validates :name, length: { maximum: 100, too_long: "-> %{count} characters is the maximum allowed", minimum: 2, too_short: "-> %{count} characters is the minimum allowed" }
+validates :email, length: { maximum: 100, too_long: "-> %{count} characters is the maximum allowed", minimum: 2, too_short: "-> %{count} characters is the minimum allowed" }
+validates :phone_number, length: { is: 10, wrong_length: "-> just exactly %{count} digits is allowed" }
+=========================================================================================================================================
+=========================================================================================================================================
+USEFUL COMMANDS
+=========================================================================================================================================
+rake db:migrate:status #view all ID migrate
+rake routes #the same that localhost/rails/info/routes
+rake db:rollback #if you forget change or add in db/....add_role_to_users.rb
+rails destroy scaffold User #destroy scaffold
+rails g kaminari:views default #generate views
+rails d kaminari:views default #destroy views
+rake db:drop #delete the databases created, like app_development, app_test and app_production
+rake -T
+rails generate migration change_email_in_waiter
+rails destroy migration change_email_in_waiter
+rails c => Drink.destroy_all or Drink.delete_all #reset/destroy/delete all values in table
+=========================================================================================================================================
+HEROKU USEFUL COMMANDS
+=========================================================================================================================================
+heroku run rake db:schema:load
+=========================================================================================================================================
+REFERENCES
+=========================================================================================================================================
+http://railscasts.com/
+https://github.com/MrPowers/frontend-generators
+https://www.pexels.com/search/business/
+https://mixandgo.com/blog/how-to-install-bootstrap-4-in-rails
+https://www.railstutorial.org/book/updating_and_deleting_users #################current admin to destroy user
+http://techenthu.in/2017/09/02/common-exceptions-ruby-rails/ ***some exceptions and how you solve them
+http://railscasts.com/episodes/196-nested-model-form-part-1?view=asciicast #nested_attributes
+=========================================================================================================================================
